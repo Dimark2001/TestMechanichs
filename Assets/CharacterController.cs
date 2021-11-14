@@ -9,7 +9,7 @@ public class CharacterController : MonoBehaviour
     CharacterCharacteristic characteristic;
     CharacterMovement characterMove;
     GameObject character;
-    public float rayLen;
+    public float rayLen=0.02f;
     
     void Start()
     {
@@ -21,15 +21,17 @@ public class CharacterController : MonoBehaviour
 
     void Update()
     {
-        characterMove.Move(Input.GetAxis("Horizontal"));
+        characterMove.Move(Input.GetAxis("Horizontal"),Is_RightWall(),Is_LeftWall());
+
         if(Is_Ground() && Input.GetButtonDown("Vertical"))
         {
             characterMove.Jamp();
         }
-        if(Is_ForwardWall())
+        if(Is_RightWall() || Is_LeftWall())
         {
             characterMove.Climb(Input.GetAxis("Vertical"));
         }
+
         
     }
     public bool Is_Ground()
@@ -49,20 +51,36 @@ public class CharacterController : MonoBehaviour
         Debug.Log(hit.collider);
         return is_ground;
     }
-    public bool Is_ForwardWall()
+    public bool Is_RightWall()
     {
-        bool is_ForwardWall;
+        bool is_rightWall;
         RaycastHit2D hit = Physics2D.Raycast(new Vector2((transform.position.x+(transform.localScale.x)/2+0.001f),transform.position.y), Vector2.right * rayLen, rayLen);
         Debug.DrawRay(new Vector2((transform.position.x+(transform.localScale.x)/2+0.001f),transform.position.y), Vector2.right * rayLen, Color.red);
         if(hit.collider != null && hit.collider.tag == "Ground")
         {
-            is_ForwardWall = true;
+            is_rightWall = true;
         }
         else
         {
-            is_ForwardWall = false;
+            is_rightWall = false;
         }
-        Debug.Log(is_ForwardWall);
-        return is_ForwardWall;
+        Debug.Log(is_rightWall);
+        return is_rightWall;
+    }
+    public bool Is_LeftWall()
+    {
+        bool is_leftWall;
+        RaycastHit2D hit = Physics2D.Raycast(new Vector2((transform.position.x-(transform.localScale.x)/2-0.001f),transform.position.y), -Vector2.right * rayLen, rayLen);
+        Debug.DrawRay(new Vector2((transform.position.x-(transform.localScale.x)/2-0.001f),transform.position.y), -Vector2.right * rayLen, Color.green);
+        if(hit.collider != null && hit.collider.tag == "Ground")
+        {
+            is_leftWall = true;
+        }
+        else
+        {
+            is_leftWall = false;
+        }
+        Debug.Log(is_leftWall);
+        return is_leftWall;
     }
 }

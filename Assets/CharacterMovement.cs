@@ -15,9 +15,21 @@ public class CharacterMovement : MonoBehaviour
         characteristic = character.GetComponent("CharacterCharacteristic") as CharacterCharacteristic;
         
     }
-    public void Move(float direction) //влево dir < 0 > dir вправо
+    public void Move(float direction, bool rightWall, bool leftWall) //влево dir < 0 > dir вправо
     {
-        character.transform.position += Vector3.right * characteristic.speedWalk * direction;
+        if (rightWall && direction < 0)
+        {
+            character.transform.position += Vector3.right * characteristic.speedWalk * direction;
+        }
+        if (leftWall && direction > 0)
+        {
+            character.transform.position += Vector3.right * characteristic.speedWalk * direction;
+        }
+        if(!rightWall && !leftWall)
+        {
+            character.transform.position += Vector3.right * characteristic.speedWalk * direction;
+        }
+        
     }
     public void Move(Vector3 direction)
     {
